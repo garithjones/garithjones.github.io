@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+
+    <link rel="apple-touch-icon" sizes="57x57" href="/assets/applicationIcon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/assets/applicationIcon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/assets/applicationIcon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/assets/applicationIcon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/assets/applicationIcon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/assets/applicationIcon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/assets/applicationIcon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/assets/applicationIcon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/applicationIcon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/applicationIcon/android-icon-192x192.png">
+    <!--<link rel="icon" type="image/png" sizes="32x32" href="/assets/applicationIcon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/applicationIcon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/applicationIcon/favicon-16x16.png">-->
+    <link rel="manifest" href="/assets/applicationIcon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/assets/applicationIcon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <!--Apple Mobile App-->
+    <!--<meta name="apple-mobile-web-app-status-bar-style" content="black">-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <title> Social Facility Provision Toolkit </title>
+
+    <!-- { BEGIN CUSTOM MODULE STYLE SECTION -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/sharedStyle.css">
+    <!-- } END CUSTOM MODULE STYLE SECTION -->
+
+    <!-- JQUERY -->
+    <script type="application/javascript" src="assets/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="application/javascript" src="assets/bower_components/jquery-ui/jquery-ui.min.js"></script>
+
+    <!-- ANGULAR & JQUERY -->
+    <script type="application/javascript" src="assets/bower_components/angular/angular.js"></script>
+    <script type="application/javascript" src="assets/bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+    <script type="application/javascript" src="assets/bower_components/angular-resource/angular-resource.min.js"></script>
+    <script type="application/javascript" src="assets/bower_components/angular-animate/angular-animate.min.js"></script>
+    <script type="application/javascript" src="assets/bower_components/angular-cookies/angular-cookies.min.js"></script>
+    <script type="application/javascript" src="assets/bower_components/angular-touch/angular-touch.min.js"></script>
+    <script type="application/javascript" src="assets/bower_components/angular-aria/angular-aria.min.js"></script>
+
+    <!-- Angular Material -->
+    <link rel="stylesheet" href="assets/bower_components/angular-material/angular-material.min.css">
+    <script type="application/javascript" src="assets/bower_components/angular-material/angular-material.min.js"></script>
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="assets/bower_components/leaflet/dist/leaflet.css">
+    <script type="application/javascript" src="assets/bower_components/leaflet/dist/leaflet.js"></script>
+    <script type="application/javascript" src="assets/bower_components/ui-leaflet/dist/ui-leaflet.min.no-header.js"></script>
+    <script type="application/javascript" src="assets/bower_components/ui-leaflet/dist/ui-leaflet.min.js"></script>
+    <script type="application/javascript" src="assets/bower_components/angular-simple-logger/dist/angular-simple-logger.min.js"></script>
+
+    <link href="assets/bower_components/Leaflet.fullscreen/dist/leaflet.fullscreen.css" rel="stylesheet" />
+    <script src="assets/bower_components/Leaflet.fullscreen/dist/Leaflet.fullscreen.min.js"></script>
+
+    <link href="assets/bower_components/leaflet-search/dist/leaflet-search.min.css" rel="stylesheet" />
+    <link href="assets/bower_components/leaflet-search/dist/leaflet-search.mobile.min.css" rel="stylesheet" />
+    <script src="assets/bower_components/leaflet-search/dist/leaflet-search.min.js"></script>
+
+    <!-- PouchDB -->
+    <script type="application/javascript" src="assets/bower_components/pouchdb/dist/pouchdb.js"></script>
+    <script type="application/javascript" src="assets/bower_components/angular-pouchdb/angular-pouchdb.js"></script>
+
+    <!-- Lodash -->
+    <script type="application/javascript" src="assets/bower_components/ng-lodash/build/ng-lodash.min.js"></script>
+    <script type="application/javascript" src="assets/bower_components/lodash/dist/lodash.min.js"></script>
+
+    <!-- Angular Material Icons-->
+    <link rel="stylesheet" href="assets/bower_components/angular-bootstrap/ui-bootstrap-csp.css">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="assets/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <script type="application/javascript" src="assets/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+
+    <!-- UI Bootstrap -->
+   <link rel="stylesheet" href="assets/bower_components/angular-bootstrap/ui-bootstrap-csp.css">
+    <script type="application/javascript" src="assets/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+
+
+    <!-- Google Web Font -->
+    <link rel="stylesheet" href="assets/css/googlewebfont.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!--UI Router-->
+    <script type="application/javascript" src="assets/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+
+    <!-- Toastr -->
+    <link rel="stylesheet" href="assets/bower_components/toastr/toastr.min.css" />
+    <script type="application/javascript" src="assets/bower_components/toastr/toastr.min.js"></script>
+
+    <!-- Moment -->
+    <script type="application/javascript" src="assets/bower_components/moment/min/moment.min.js"></script>
+
+    <!-- Spin -->
+    <script type="application/javascript" src="assets/bower_components/spin.js/spin.js"></script>
+
+    <!-- ngDialog -->
+    <link rel="stylesheet" href="assets/bower_components/ng-dialog/css/ngDialog.min.css">
+    <link rel="stylesheet" href="assets/bower_components/ng-dialog/css/ngDialog-theme-default.min.css">
+    <link rel="stylesheet" href="assets/bower_components/ng-dialog/css/ngDialog-theme-plain.min.css">
+    <script type="application/javascript" src="assets/bower_components/ng-dialog/js/ngDialog.min.js"></script>
+
+    <!-- UI GRID -->
+    <link rel="stylesheet" href="assets/bower_components/angular-ui-grid/ui-grid.min.css">
+    <script type="application/javascript" src="assets/bower_components/angular-ui-grid/ui-grid.min.js"></script>
+
+    <!-- Common Modules -->
+    <script type="application/javascript" src="app/sharedFunctions/common.js"></script>
+    <script type="application/javascript" src="app/sharedFunctions/logger.js"></script>
+    <script type="application/javascript" src="app/sharedFunctions/spinner.js"></script>
+
+    <!-- Loading Bar -->
+    <link rel="stylesheet" href="assets/bower_components/angular-loading-bar/build/loading-bar.min.css">
+    <script type="application/javascript" src="assets/bower_components/angular-loading-bar/build/loading-bar.min.js"></script>
+
+    <!-- Lodash -->
+    <script type="application/javascript" src="assets/bower_components/ng-lodash/build/ng-lodash.min.js"></script>
+
+    <!-- Angular Debounce -->
+    <script type="application/javascript" src="assets/bower_components/angular-debounce/dist/angular-debounce.min.js"></script>
+
+    <!-- Angular FontAwesome -->
+    <script type="application/javascript" src="assets/bower_components/angular-fontawesome/dist/angular-fontawesome.min.js"></script>
+
+    <!--NG CSV -->
+    <script type="application/javascript" src="assets/bower_components/ng-csv/build/ng-csv.min.js"></script>
+
+    <!-- D3 & NVD3 -->
+    <script src="assets/bower_components/d3/d3.js"></script>
+    <script src="assets/bower_components/nvd3/build/nv.d3.min.js"></script>
+    <!-- or use another assembly -->
+    <script src="assets/bower_components/angular-nvd3/dist/angular-nvd3.min.js"></script>
+    <link rel="stylesheet" href="assets/bower_components/nvd3/build/nv.d3.css">
+    
+    <!-- Angular Dashboard -->
+    <link href="assets/bower_components/angular-dashboard-framework/dist/angular-dashboard-framework.min.css" rel="stylesheet">
+    <script type="text/javascript" src="assets/bower_components/Sortable/Sortable.js"></script>
+    <script type="text/javascript" src="assets/bower_components/angular-dashboard-framework/dist/angular-dashboard-framework.js"></script>
+    <script type="text/javascript" src="assets/bower_components/adf-structures-base/dist/adf-structures-base.min.js"></script>
+
+    <!-- XXXXXX CUSTOM DIRECTIVES: CLOSE-->
+
+    <!-- ################################ AbStock - ANGULAR APP Modules ################################ -->
+    <!-- App Modules -->
+    <script type="application/javascript" src="service-worker.js"></script>
+    <script type="application/javascript" src="app/app.js"></script>
+    <script type="application/javascript" src="app/app_accountService.js"></script>
+    <script type="application/javascript" src="app/app_dbservice.js"></script>
+    <script type="application/javascript" src="app/app_constants.js"></script>
+    <script type="application/javascript" src="app/config.js"></script>
+    <script type="application/javascript" src="app/config_filter.js"></script>
+    <script type="application/javascript" src="app/services/exceptionHandler.js"></script>
+    <!-- UI Routes -->
+    <script type="application/javascript" src="app/config_ui-route.js"></script>
+
+    <!-- SHARED APP MODULES -->
+    <script type="application/javascript" src="app/services/directives.js"></script>
+    <script type="application/javascript" src="app/services/exceptionHandler.js"></script>
+    <script type="application/javascript" src="app/sharedFactory/SharedFactory.js"></script>
+    <script type="application/javascript" src="app/sharedFunctions/SharedFunctionsAppSpecific.js"></script>
+    <script type="application/javascript" src="app/sharedFunctions/SharedFunctionsGeneric.js"></script>
+    <script type="application/javascript" src="app/sharedFunctions/SharedFunctionsCommonData.js"></script>
+
+
+    <!-- Application MODULES: Generic -->
+    <script type="application/javascript" src="app/sharedControllers/TopLevelAppCtrl.js"></script>
+    <script type="application/javascript" src="app/sharedControllers/NavCtrl.js"></script>
+
+    <!-- BEGIN <<APP>> APP MODULES -->
+    <script type="application/javascript" src="app/modules/Reporting/Dashboards/Default/DefaultDashboardCtrl.js"></script>
+
+    <script type="application/javascript" src="app/modules/Browser/MapBrowserCtrl.js"></script>
+    <script type="application/javascript" src="app/modules/Browser/CatchmentDetail/CatchmentDetailCtrl.js"></script>
+    <script type="application/javascript" src="app/modules/Browser/FacilityCalculator/FacilityCalculatorCtrl.js"></script>
+    
+    <script type="application/javascript" src="app/modules/LandingPageCtrl.js"></script>
+    <!-- END <<APP>> APP MODULES -->
+        
+</head>
+
+<body ng-app="app" style="height: 100%; margin: 0px; padding: 0px;">
+    <!--    <div data-ng-if="!isLoggedIn">
+        <ul class="nav nav-pills">
+            <li><a ui-sref="MapBrowser">Browser</a></li>
+        </ul>
+    </div>-->
+    <div data-ui-view="" style="height: 100%; margin: 0px; padding: 0px;"></div>
+
+</body>
+
+</html>

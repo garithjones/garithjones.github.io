@@ -1,0 +1,550 @@
+angular.module('app').controller(MapBrowserOldCtrl, ['$scope', '$rootScope', '$location', '$state', 'common', 'SharedFunctionsCommonData', 'lodash', 'leafletData', 'leafletMapEvents', '$pouchDB', MapBrowserOldCtrl]);
+
+    function MapBrowserOldCtrl($scope, $rootScope, $location, $state, common, SharedFunctionsCommonData, lodash, leafletData, leafletMapEvents, $pouchDB) {
+        $scope.title = 'DefaultDashboardCtrl';
+
+        $scope.$state = $state;
+        $scope.isBusyLoading = true;
+        $scope.numTotal = 0;
+        var numProcessed = 0;
+        var listOfAllFeatures = [];
+
+        $scope.numAllCatchment = 0;
+        var listOfAllCatchment = [];
+        var listOfAllCatchmentDocuments = [];
+        var listOfAllCatchmentFeatures = [];
+
+        var getLogFn = common.logger.getLogFn;
+        var log = getLogFn(controllerID);
+
+        var originatorEv;
+        $scope.isOffline = true;
+        $scope.map = {};
+        $scope.selectedFeatureData = undefined;
+
+        var geojson;
+
+        $scope.defaults = {
+            scrollWheelZoom: true
+            /*            tileLayer: 'http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png',
+                        maxZoom: 14,
+                        path: {
+                            weight: 10,
+                            color: '#800000',
+                            opacity: 1*/
+        };
+
+        $scope.center = {
+            lat: -28.4054358,
+            lng: 20.1791898,
+            zoom: 6
+        };
+
+        $scope.geojson = {
+            style: {
+                fillColor: "green",
+                weight: 2,
+                opacity: 1,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 0.7
+            }
+        };
+
+        $scope.controls = {
+            scale: true,
+            fullscreen: {
+                position: 'topleft'
+            },
+            //search: {
+            //layer: baselayers.overlays.search
+            //}
+        };
+
+        var states = [{
+            "type": "Feature",
+            "properties": {
+                "party": "Republican"
+            },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [-104.05, 48.99],
+                    [-97.22, 48.98],
+                    [-96.58, 45.94],
+                    [-104.03, 45.94],
+                    [-104.05, 48.99]
+                ]]
+            }
+        }, {
+                "type": "Feature",
+                "properties": {
+                    "party": "Democrat"
+                },
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [[
+                        [-109.05, 41.00],
+                        [-102.06, 40.99],
+                        [-102.03, 36.99],
+                        [-109.04, 36.99],
+                        [-109.05, 41.00]
+                    ]]
+                }
+            }];
+
+        this.notificationsEnabled = true;
+        this.toggleNotifications = function () {
+            this.notificationsEnabled = !this.notificationsEnabled;
+        };
+
+        /*        function onEachFeature(feature, layer) {
+                    if (feature.properties) {
+                        layer.bindPopup(" " + feature.properties.name + " " + "<br>Affected Bridges : " + feature.properties.Br_Affected + " ");
+                    }
+                }
+        
+                var highlight = {
+                    'color': '#333333',
+                    'weight': 2,
+                    'opacity': 0.75
+                };
+        */
+        function highlightLayer(layerID) {
+            map._layers['name' + LayerID].setStyle(highlight);
+        }
+
+        $scope.ToggleOffline = function () {
+            $scope.isOffline = !$scope.isOffline;
+            if ($scope.isOffline === false) {
+                //Start Replicating
+                $pouchDB.StartReplicatingToLocal();
+            } else {
+                //Stop Replicating
+                $pouchDB.StopReplicatingToLocal();
+            }
+        };
+
+        function onMapClick(e) {
+            alert("You clicked the map at " + e.latlng);
+        }
+
+        function onLayerClick(e) {
+            //alert("You clicked the layer at " + e.latlng);
+            /*e.options.fill = false;
+            var bounds = layer.getBounds();
+            var popupContent = "popup content here";
+            popup.setLatLng(bounds.getCenter());
+            popup.setContent(popupContent);
+            map.openPopup(popup);*/
+
+        }
+
+
+
+        function InitMap() {
+            leafletData.getMap().then(initMapSuccess, initMapFailure);
+
+            function initMapSuccess(map) {
+                console.log(map);
+                console.log(map);
+
+                $scope.map = map;
+                //map.addControl(searchControl); //inizialize search control
+
+                $scope.eventDetected = "No events yet...";
+                var mapEvents = leafletMapEvents.getAvailableMapEvents();
+                for (var k in mapEvents) {
+                    //console.log(mapEvents[k]);
+                    var eventName = 'leafletDirectiveMap.' + mapEvents[k];
+                    $scope.$on(eventName, function (event) {
+                        $scope.eventDetected = event.name;
+                    });
+
+                    var eventNameGEOJSON = 'leafletDirectiveGeoJson.' + mapEvents[k];
+                    $scope.$on(eventName, function (event) {
+                        $scope.eventDetected = event.name;
+                    });
+                }
+
+                console.log(states);
+
+                map.addControl(new L.Control.Search({
+                    url: 'http://nominatim.openstreetmap.org/search?format=json&q={s}',
+                    jsonpParam: 'json_callback',
+                    propertyName: 'display_name',
+                    propertyLoc: ['lat', 'lon'],
+                    circleLocation: false,
+                    markerLocation: false,
+                    autoType: false,
+                    autoCollapse: true,
+                    minLength: 2
+                }));
+
+                //new GenerateMapFeatures(map);
+
+                /*var searchControl = new L.Control.Search({
+                    layer: geojson,
+                    propertyName: 'name',
+                    circleLocation: false,
+                    moveToLocation: function (latlng, title, map) {
+                        //map.fitBounds( latlng.layer.getBounds() );
+                        var zoom = map.getBoundsZoom(latlng.layer.getBounds());
+                        map.setView(latlng, zoom); // access the zoom
+                    }
+                });
+
+                searchControl.on('search_locationfound', function (e) {
+
+                    e.layer.setStyle({
+                        fillColor: '#3f0',
+                        color: '#0f0'
+                    });
+                    if (e.layer._popup)
+                        e.layer.openPopup();
+
+                }).on('search_collapsed', function (e) {
+
+                    featuresLayer.eachLayer(function (layer) { //restore feature color
+                        featuresLayer.resetStyle(layer);
+                    });
+                }); */
+
+            }
+
+            function initMapFailure(data) { }
+        }
+
+        /*        $scope.$on("leafletDirectiveGeoJson.mouseover", function (ev, leafletPayload) {
+                    alert("Moused Over");
+                    featureMouseover(leafletPayload.leafletObject.feature, leafletPayload.leafletEvent);
+                });
+
+                $scope.$on("leafletDirectiveGeoJson.click", function (ev, leafletPayload) {
+                    featureClick(leafletPayload.leafletObject, leafletPayload.leafletEvent);
+                });
+        */
+
+        /*       function featureClick(country, event) {
+            country = country.feature;
+            console.log(country.properties.name);
+        }
+
+        // Mouse over function, called from the Leaflet Map Events
+        function featureMouseover(feature, leafletEvent) {
+            var layer = leafletEvent.target;
+            layer.setStyle({
+                weight: 2,
+                color: '#666',
+                fillColor: 'white'
+            });
+            layer.bringToFront();
+            $scope.selectedCountry = feature;
+            console.log(feature);
+        }
+*/
+
+        function GenerateStatData(catchmentObject) {
+            numProcessed++;
+
+            //console.log(catchmentObject);
+            var feature = lodash.first(catchmentObject.features);
+            console.log(feature);
+            //console.log(feature.properties);
+            if (feature !== null && feature !== undefined) {
+                feature.properties._censusPopulation = [];
+                var Pop96 = {
+                    label: 1996,
+                    value: feature.properties.Pop96
+                };
+                var Pop01 = {
+                    label: 2001,
+                    value: feature.properties.Pop01
+                };
+                var Pop11 = {
+                    label: 2011,
+                    value: feature.properties.Pop11
+                };
+
+                feature.properties._censusPopulation.push(Pop96, Pop01, Pop11);
+
+                feature.properties._populationRadius = [];
+                var pop_10km = {
+                    rangeName: '0-10km',
+                    rangeSeq: 1,
+                    population: 391.52
+                };
+                var pop_10_15 = {
+                    rangeName: '10-15km',
+                    rangeSeq: 2,
+                    population: 375.83
+                };
+                var pop_15_20 = {
+                    rangeName: '15-20km',
+                    rangeSeq: 3,
+                    population: 410.7
+                };
+                var pop_20_30 = {
+                    rangeName: '20-30km',
+                    rangeSeq: 4,
+                    population: 1853.78
+                };
+                var Pop_30_50 = {
+                    rangeName: '30-50km',
+                    rangeSeq: 5,
+                    population: 1030.06
+                };
+                var Pop_50Plus = {
+                    rangeName: 'greater than 50km',
+                    rangeSeq: 6,
+                    population: 38.41
+                };
+
+                feature.properties._populationRadius.push(pop_10km, pop_10_15, pop_15_20, pop_20_30, Pop_30_50, Pop_50Plus);
+                listOfAllCatchmentFeatures.push(feature);
+            }
+
+
+            //console.log(feature.properties);
+
+
+            if ($scope.numTotal === numProcessed) {
+                new GenerateStatDataCompleted();
+            }
+
+
+            /*
+            Pop01:31556.02
+            Pop11:27187.42
+            Pop96:29349.51
+            PopDif96_1:-7.37
+            */
+
+            /*
+            pop_10_15:375.83
+            pop_10km:391.52
+            pop_15_20:410.7
+            pop_20_30:1853.78
+            Pop_30_50:1030.06
+            Pop_50Plus:38.41
+            */
+        }
+
+        function GenerateStatDataCompleted() {
+            $scope.isBusyLoading = false;
+            new UpdateMapFeatures($scope.map, listOfAllCatchmentFeatures);
+
+        }
+
+        function GetAllCatchmentDocuments() {
+            $pouchDB.GetAllDocs().then(getAllDocsSuccess, getAllDocsFailure);
+
+            function getAllDocsSuccess(success) {
+                console.log("test");
+                console.log(success);
+                listOfAllCatchment = success.rows;
+                var numTotal = listOfAllCatchment.length;
+                var numProcessed = 0;
+
+                $scope.numAllCatchment = listOfAllCatchment.length;
+                numProcessed = 0;
+
+                console.log(listOfAllCatchment);
+
+                //listOfAllFeatures = data.rows;
+
+                lodash.forEach(listOfAllCatchment, function (n, key) {
+                    $pouchDB.Get(n.id).then(loadedDocumentSuccess, loadedDocumentFailure);
+                    numProcessed++;
+
+                    if (numProcessed === numTotal) {
+                        console.log("completed all docs");
+                        new completedAllDocs();
+                    }
+                });
+            }
+
+            function loadedDocumentSuccess(success) {
+                console.log(success);
+                var catchmentDocument = success;
+                new GenerateStatData(catchmentDocument);
+                //console.log(listOfAllCatchmentFeatures);
+                //new UpdateMapFeatures($scope.map,catchmentDocument);
+
+            }
+
+            $scope.NumberOfActiveCatchments = function () {
+                return listOfAllCatchmentDocuments.length;
+            }
+
+            function loadedDocumentFailure(failure) { }
+
+            function getAllDocsFailure(failure) { }
+
+            function completedAllDocs() {
+                console.log(listOfAllCatchment, listOfAllCatchmentDocuments);
+                $scope.isBusyLoading = false;
+                var FeatureLayer = _.map(listOfAllCatchmentDocuments, 'features')
+                console.log(FeatureLayer);
+            }
+        }
+
+        function UpdateCatchmentDocuments(doc) {
+            console.log(doc);
+            if (doc !== null && doc !== undefined) {
+                //try find it in the ListOfAllCatchmentDocuments
+                var found = _.find(listOfAllCatchmentDocuments, function (o) {
+                    return o._id === doc._id;
+                });
+
+                if (found === null || found === undefined) {
+                    console.log(doc);
+                    listOfAllCatchmentDocuments.push(doc);
+                }
+            }
+        }
+
+        function UpdateMapFeatures(map, featureLayer) {
+            console.log(map, featureLayer);
+            geojson = L.geoJson(featureLayer, {
+                style: {
+                    "color": "#ff7800",
+                    "weight": 5,
+                    "opacity": 0.2,
+                    "fill": true
+                },
+                onEachFeature: onEachFeature
+            }).addTo(map);
+
+        }
+
+        function GenerateMapFeatures(map) {
+            $pouchDB.GetAllDocs().then(function (data) {
+                console.log("test");
+                //console.log(data);
+
+                //listOfAllFeatures = data.rows;
+                //$scope.numTotal = listOfAllFeatures.length;
+
+                lodash.forEach(listOfAllFeatures, function (n, key) {
+                    //console.log(n.id);
+                    //$pouchDB.Get(n.id).then(loadedFeatureSuccess, loadedFeatureFailure);
+                });
+
+            }, function () {
+
+            });
+
+            function loadedFeatureSuccess(data) {
+                if (data.length === 0) {
+                }
+
+                //console.log(data);
+                new GenerateStatData(data);
+
+                geojson = L.geoJson(data.features, {
+                    style: {
+                        "color": "#ff7800",
+                        "weight": 5,
+                        "opacity": 0.2,
+                        "fill": true
+                    },
+                    onEachFeature: onEachFeature
+                }).addTo(map);
+
+            }
+
+            function loadedFeatureFailure(data) { }
+        }
+
+        $rootScope.$on('$pouchDB:change', function (event, args) {
+            console.log("New Row Got to the Front", event, args);
+            //new GetAllCatchmentDocuments();
+            if (args !== null && args !== undefined) {
+                UpdateCatchmentDocuments(args.doc);
+            }
+        });
+
+        function clickFeature(e) {
+            console.log(e);
+            console.log($scope.map);
+            $scope.selectedFeatureData = e.target.feature;
+            $scope.map.fitBounds(e.target.getBounds());
+        }
+
+        function resetHighlight(e) {
+            geojson.resetStyle(e.target);
+        }
+
+        function highlightFeature(e) {
+            var layer = e.target;
+
+            layer.setStyle({
+                weight: 5,
+                color: '#666',
+                dashArray: '',
+                fillOpacity: 0.7
+            });
+
+            if (!L.Browser.ie && !L.Browser.opera) {
+                layer.bringToFront();
+            }
+        }
+
+        function onEachFeature(feature, layer) {
+            layer.on({
+                mouseover: highlightFeature,
+                mouseout: resetHighlight,
+                click: clickFeature
+            });
+
+            /*
+            console.log(feature, layer);
+            layer.on('mouseover', function (e) {
+                console.log(e);
+                try {
+                    console.log(e.target);
+                    console.log(e.target.options);
+                    console.log(e.target.options.color);
+                    e.target.options.color = "green";
+
+                    e.target._options.style.fillOpacity = 0.65;
+                } catch (ex) {
+                    console.log(ex);
+                }
+            });*/
+
+            //bind click
+            /*layer.on({
+                //click: alert("YEAH"),
+                mouseover: alert("YEAH - Mouse Over")
+            });*/
+        }
+
+        $scope.ShowDetails = function (featureData) {
+            //console.log(featureData);
+            $state.go('MapBrowser.CatchmentDetail');
+        };
+
+        $scope.BackToMapBrowser = function () {
+            $state.go('MapBrowser');
+        };
+
+
+        function Init() {
+            //alert("Loaded Catchment Browser");
+            console.log($pouchDB);
+            console.log($scope.map);
+            new InitMap();
+
+            new GetAllCatchmentDocuments();
+
+
+            //console.log($pouchDB.GetAllDocs());
+
+        }
+
+        new Init();
+
+
+    }

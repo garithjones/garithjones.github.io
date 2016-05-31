@@ -1,0 +1,168 @@
+<div>
+    <md-content>
+        <md-tabs md-dynamic-height md-border-bottom>
+            <md-tab label="Dashboard">
+                <md-content class="md-padding">
+                    <h4 class="md-display-1">Dashboard</h4>
+                    <div layout="row">
+                        <div flex>
+                            <div layout="column">
+                                <div layout="row">
+                                    <div>
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Catchment Name</th>
+                                                    <th>{{featureProperties.FIRST_Name}}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Morphology</td>
+                                                    <td>{{featureProperties._structure}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Connectivity</td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Order Number</td>
+                                                    <td>{{featureProperties.Order_}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Order Description</td>
+                                                    <td>{{featureProperties._orderDescription}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>DM Seat?</td>
+                                                    <td>{{featureProperties.DM_SEAT}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>LM Seat?</td>
+                                                    <td>{{featureProperties.LM_SEAT}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div flex="5">
+                                    </div>
+                                    <div>
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="2">Catchment Statistics</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Population 2011</td>
+                                                    <td>{{featureProperties.Pop11}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Cumulative Sub-Catchment Population</td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Density (Persons per km^2)</td>
+                                                    <td>{{featureProperties.F11Density}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Total Area (km^2)</td>
+                                                    <td>{{featureProperties.Area_sqkm}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>% Population Growth / Decline: 1996-2011</td>
+                                                    <td>{{featureProperties.PopDif96_1}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div flex>
+                                    <div layout="row">
+                                        <div flex="70">
+                                            <md-progress-circular md-mode="indeterminate" ng-if="!isPopulationCensusChartReady"></md-progress-circular>
+                                            <nvd3 ng-if="isPopulationCensusChartReady" options="optionsPopulationCensus" data="dataPopulationCensus"></nvd3>
+                                        </div>
+                                        <div flex>
+                                            <md-progress-circular md-mode="indeterminate" ng-if="!isPopulationRadiusChartReady"></md-progress-circular>
+                                            <nvd3 options="optionsPopulationRadius" data="dataPopulationRadius" ng-if="isPopulationRadiusChartReady"></nvd3>
+                                        </div>
+                                    </div>
+                                    <div layout="row">
+                                        <div flex=35>
+                                            <md-progress-circular md-mode="indeterminate" ng-if="!isSlopeChartReady"></md-progress-circular>
+                                            <nvd3 ng-if="isSlopeChartReady" options="optionsSlope" data="dataSlope"></nvd3>
+                                        </div>
+                                        <div flex=35>
+                                            <md-progress-circular md-mode="indeterminate" ng-if="!isGVAChartReady"></md-progress-circular>
+                                            <nvd3 ng-if="isGVAChartReady" options="optionsGVA" data="dataGVA" ng-if="isGVAChartReady"></nvd3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </md-content>
+            </md-tab>
+            <md-tab label="Closest">
+                <md-content class="md-padding">
+                    <h4 class="md-display-1">Closest Catchments</h4>
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Sub-Catchment Name</th>
+                                <th>Population 2011</th>
+                                <th>Total Area (km^2)</th>
+                                <th>Distance to Main Town (km)</th>
+                                <th>Density (Persons per km^2)</th>
+                                <th>% Population Growth / Decline: 1996-2011</th>
+                                <th>Catchment Level</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="a in featureProperties._lowerOrderCloseCatchments | orderBy:'-Order_'">
+                                <td>{{a.properties.FIRST_Name}}</td>
+                                <td>{{a.properties.Pop11}}</td>
+                                <td>{{a.properties.Area_sqkm}}</td>
+                                <td></td>
+                                <td>{{a.properties.F11Density}}</td>
+                                <td>{{a.properties.PopDif96_1}}</td>
+                                <td>{{a.properties.Order_}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </md-content>
+            </md-tab>
+            <md-tab label="Lower Order">
+                <md-content class="md-padding">
+                    <h4 class="md-display-1">Lower Order Catchments</h4>
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Sub-Catchment Name</th>
+                                <th>Population 2011</th>
+                                <th>Total Area (km^2)</th>
+                                <th>Distance to Main Town (km)</th>
+                                <th>Density (Persons per km^2)</th>
+                                <th>% Population Growth / Decline: 1996-2011</th>
+                                <th>Catchment Level</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="a in featureProperties._lowerOrderCatchments | orderBy:'-Order_'">
+                                <td>{{a.properties.FIRST_Name}}</td>
+                                <td>{{a.properties.Pop11}}</td>
+                                <td>{{a.properties.Area_sqkm}}</td>
+                                <td></td>
+                                <td>{{a.properties.F11Density}}</td>
+                                <td>{{a.properties.PopDif96_1}}</td>
+                                <td>{{a.properties.Order_}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </md-content>
+            </md-tab>
+        </md-tabs>
+    </md-content>
+</div>

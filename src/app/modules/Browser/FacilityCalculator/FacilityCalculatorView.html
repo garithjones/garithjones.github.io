@@ -1,0 +1,57 @@
+<div>
+    <div flex>
+        <br />
+        <md-input-container>
+            <label>Population</label>
+            <input md-detect-hidden type="number" ng-model="search.population">
+        </md-input-container>
+        <md-button ng-click="DoSearch()">
+            <md-icon class="material-icons">search</md-icon>
+        </md-button>
+    </div>
+</div>
+<br />
+<div class="col-md-48">
+    <table class="table">
+        <thead>
+            <th>Sector</th>
+            <th>Facility Type</th>
+            <th>Min Population</th>
+            <th>Max Population</th>
+            <th>Distance</th>
+            <!-- <th>Cal Units</th> -->
+            <!-- <th>Cal UOM</th> -->
+            <!-- <th>Cal Population</th> -->
+            <th>No. Facilities</th>
+        </thead>
+        <tr ng-repeat="facility in Facilities">
+            <td>
+                <p>{{facility.Sector}}</p>
+            </td>
+            <td>
+                <p>{{facility.FacilityType}}</p>
+            </td>
+            <td>
+                <p>{{facility.minPopulation}} <span class="label label-primary">{{facility.minPopulationRepresented}}</span></p>
+            </td>
+            <td>
+                <p>{{facility.maxPopulation}} <span class="label label-primary">{{facility.maxPopulationRepresented}}</span></p>
+            </td>
+            <td>
+                <p>{{facility.withinDistance}} <span class="label label-warning" ng-if="(facility.withinDistance!==facility.withinDistanceLowDensity)">{{facility.withinDistanceLowDensity}}</span></p>
+            </td>
+            <td>
+                <p>{{facility.calculation_units}}</p>
+            </td>
+            <td>
+                <p>{{facility.calculation_uom}}</p>
+            </td>
+            <td>
+                <p>{{facility.calculation_population}}</p>
+            </td>
+            <td>
+                <p>{{facility.calculatedFacilities}}</p>
+            </td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,59 @@
+<div>
+    <md-toolbar md-scroll-shrink style="position: fixed;">
+        <div layout="row">
+            <div flex>
+
+                <div class="md-toolbar-tools">
+                    <md-button ng-if="$state.current.name === 'MapBrowser' && selectedFeatureData !== undefined" ng-click="ShowDetails()">
+                        <md-icon class="material-icons">photo_size_select_large</md-icon>
+                    </md-button>
+                    <md-button ng-if="$state.current.name !== 'MapBrowser'" ng-click="BackToMapBrowser()">
+                        <md-icon class="material-icons">arrow_back</md-icon>
+                    </md-button>
+                    <md-button ng-click="ShowFacilityCalculator()">
+                        <md-icon class="material-icons">build</md-icon>
+                    </md-button>
+
+                    <md-icon md-svg-icon="arrow_back"></md-icon>
+                    <md-icon md-svg-icon <section layout="row" layout-sm="column" layout-align="center center" layout-wrap>
+                        {{selectedFeatureData}} {{selectedFeatureData.properties.TOWN_Con}}
+                        </section>
+                    </md-icon>
+
+                </div>
+
+            </div>
+            <div flex>
+                <div class="md-toolbar-tools">
+                    <md-button ng-click="ToggleOffline()">
+                        <md-icon class="material-icons">{{isOffline ? 'signal_wifi_off' : 'network_wifi'}}</md-icon>
+                        {{isOffline ? 'Offline' : 'Online' }}
+                    </md-button>
+                    <md-label>{{numCatchments}}</md-label>
+
+                    <md-button ng-click="RefreshPage()">
+                        <md-icon class="material-icons">refresh</md-icon>
+                    </md-button>
+                </div>
+            </div>
+            <div flex style="direction: rtl">
+                <div class="md-toolbar-tools">
+                    <md-label style=""> {{ selectedFeatureData.properties.FIRST_Name }} {{ selectedFeatureData.properties.Uniq_2 }} </md-label>
+                </div>
+            </div>
+        </div>
+    </md-toolbar>
+    <br>
+    <br>
+    <br>
+    <div layout="row" layout-sm="column" layout-align="space-around" ng-if="isBusyLoading">
+        <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+    </div>
+
+    <leaflet defaults="defaults" style="position: fixed;" center="center" controls="controls" height="700px" width="100%" ng-show="$state.current.name === 'MapBrowser'"></leaflet>
+    <div id="form-views" ui-view ng-show="$state.current.name === 'MapBrowser.CatchmentDetail'"></div>
+    <div id="form-views" ui-view ng-show="$state.current.name === 'MapBrowser.FacilityCalculator'"></div>
+    <div>
+        <!--    {{selectedFeatureData.properties}}-->
+    </div>
+</div>

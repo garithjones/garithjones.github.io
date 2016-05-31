@@ -1,0 +1,35 @@
+<div>
+  <div flex ng-controller="LandingPageCtrl" layout="column" style="height:100%" ng-cloak>
+    <md-toolbar md-scroll-shrink ng-if="true" ng-controller="LandingPageCtrl">
+      <div class="md-toolbar-tools">
+        <h3>
+        <p>This is a landing page:D</p>
+      </h3>
+        <md-button class="md-raised" ng-click="GoToMapBrowser()">Map
+          <md-icon class="material-icons">add_location</md-icon>
+        </md-button>
+        <md-button class="md-raised" ng-click="GoToFacilityCalculator()">Calculator
+          <md-icon class="material-icons">build</md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+  </div>
+
+  <div flex ng-controller="LandingPageCtrl" layout="column" style="height:1000px;" ng-cloak>
+    <section layout="row" flex>
+      <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
+        <md-toolbar class="md-theme-indigo">
+          <h1 class="md-toolbar-tools">This side menu thing</h1>
+        </md-toolbar>
+        <label><b>Login</b></label>
+        <div>
+          <label>Email</label><br>
+          <input name="email"></input><br>
+          <label>Password</label><br>
+          <input name="Password"></input>
+        </div>
+      </md-sidenav>
+      <md-content layout-padding>
+    </section>
+  </div>
+</div>
